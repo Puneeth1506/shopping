@@ -9,10 +9,11 @@ import {
   Printer,
   ShoppingBag,
   ShieldCheck,
+  Truck,
 } from 'lucide-react';
 
 export const OrderConfirmationModal: React.FC = () => {
-  const { lastCompletedOrder, setActiveView } = useCart();
+  const { lastCompletedOrder, setActiveView, openTrackingForOrder } = useCart();
 
   if (!lastCompletedOrder) {
     return (
@@ -177,18 +178,28 @@ export const OrderConfirmationModal: React.FC = () => {
         </div>
 
         {/* Action Controls */}
-        <div className="pt-6 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <button
-            onClick={() => window.print()}
-            className="w-full sm:w-auto px-4 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded text-xs font-medium transition-colors flex items-center justify-center gap-2"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print Tax Invoice (GST)</span>
-          </button>
+        <div className="pt-6 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => openTrackingForOrder(order.orderId)}
+              className="w-full sm:w-auto px-4 py-2.5 bg-neutral-900 hover:bg-black text-white rounded text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
+            >
+              <Truck className="w-3.5 h-3.5 text-[#E0A865]" />
+              <span>Track Live Consignment</span>
+            </button>
+
+            <button
+              onClick={() => window.print()}
+              className="w-full sm:w-auto px-3.5 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded text-xs font-medium transition-colors flex items-center justify-center gap-2"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print Invoice</span>
+            </button>
+          </div>
 
           <button
             onClick={() => setActiveView('shop')}
-            className="w-full sm:w-auto px-6 py-2.5 bg-[#191918] hover:bg-neutral-800 text-white rounded text-xs uppercase tracking-wider font-semibold transition-colors flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-5 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded text-xs uppercase tracking-wider font-semibold transition-colors flex items-center justify-center gap-2"
           >
             <span>Continue Shopping</span>
             <ArrowRight className="w-3.5 h-3.5" />

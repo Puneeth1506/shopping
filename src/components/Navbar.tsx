@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { ShoppingBag, Search, X, Menu, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Search, X, Menu, ShieldCheck, Heart } from 'lucide-react';
 
 interface NavbarProps {
   onSearchChange: (query: string) => void;
@@ -15,7 +15,16 @@ export const Navbar: React.FC<NavbarProps> = ({
   onCategorySelect,
   onStoriesClick,
 }) => {
-  const { totalItemsCount, subtotal, setIsCartOpen, setActiveView, activeView } = useCart();
+  const {
+    totalItemsCount,
+    subtotal,
+    setIsCartOpen,
+    setActiveView,
+    activeView,
+    openTrackingForOrder,
+    wishlistCount,
+    setIsWishlistOpen,
+  } = useCart();
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -107,6 +116,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             Customer Stories
           </button>
+          <button
+            onClick={() => {
+              openTrackingForOrder();
+              setMobileMenuOpen(false);
+            }}
+            className={`hover:text-[#191918] transition-colors py-1 flex items-center gap-1 ${
+              activeView === 'tracking' ? 'text-[#191918] font-bold underline underline-offset-4' : ''
+            }`}
+          >
+            <span>Track Order</span>
+          </button>
         </nav>
 
         {/* Zone 3: 1-2 primary actions */}
@@ -143,6 +163,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Search className="w-4 h-4" />
             </button>
           )}
+
+          {/* Wishlist Heart Action */}
+          <button
+            onClick={() => setIsWishlistOpen(true)}
+            className="relative p-2 text-neutral-700 hover:text-rose-600 rounded transition-colors focus-visible:outline-none"
+            aria-label={`View personal wishlist, ${wishlistCount} items`}
+            title="Personal Wishlist Collection"
+          >
+            <Heart className={`w-4 h-4 transition-colors ${wishlistCount > 0 ? 'text-rose-600 fill-current' : ''}`} />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-rose-600 text-white font-bold text-[9px] w-4 h-4 rounded-full flex items-center justify-center leading-none">
+                {wishlistCount}
+              </span>
+            )}
+          </button>
 
           {/* Direct Cart Bag Action */}
           <button
@@ -204,6 +239,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="text-left py-1 text-[#8C7A6B] font-semibold"
           >
             Customer Stories & Reviews
+          </button>
+          <button
+            onClick={() => {
+              openTrackingForOrder();
+              setMobileMenuOpen(false);
+            }}
+            className="text-left py-1 text-neutral-800 hover:text-black font-semibold flex items-center gap-1.5"
+          >
+            <span>Track Order (AWB / Bluedart / Delhivery)</span>
           </button>
         </div>
       )}

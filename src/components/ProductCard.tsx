@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
-import { Plus, Check, Eye } from 'lucide-react';
+import { Plus, Check, Eye, Heart } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { addToCart, setSelectedProductForModal } = useCart();
+  const { addToCart, setSelectedProductForModal, toggleWishlist, isInWishlist } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const favorited = isInWishlist(product.id);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
     addToCart(product, 1);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
+  };
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleWishlist(product);
   };
 
   return (
@@ -50,6 +57,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.tag}
           </div>
         )}
+
+        {/* Heart Wishlist Button (top right) */}
+        <button
+          onClick={handleToggleFavorite}
+          className={`absolute top-3 right-3 z-20 p-2 rounded-full backdrop-blur-md transition-all shadow-xs ${
+            favorited
+              ? 'bg-white text-rose-600 scale-105'
+              : 'bg-white/80 hover:bg-white text-neutral-600 hover:text-rose-600'
+          }`}
+          aria-label={favorited ? `Remove ${product.name} from wishlist` : `Heart ${product.name} to wishlist`}
+          title={favorited ? 'In your wishlist' : 'Heart to save in personal collection'}
+        >
+          <Heart className={`w-3.5 h-3.5 transition-colors ${favorited ? 'fill-current text-rose-600' : ''}`} />
+        </button>
 
         {/* Hover Quick Actions Bar */}
         <div className="absolute bottom-3 inset-x-3 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">

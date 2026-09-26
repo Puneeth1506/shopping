@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { X, Check, ShoppingBag, ShieldCheck, RefreshCw, Truck, MapPin } from 'lucide-react';
+import { X, Check, ShoppingBag, ShieldCheck, RefreshCw, Truck, MapPin, Heart } from 'lucide-react';
 
 export const ProductDetailModal: React.FC = () => {
-  const { selectedProductForModal, setSelectedProductForModal, addToCart, setIsCartOpen } = useCart();
+  const {
+    selectedProductForModal,
+    setSelectedProductForModal,
+    addToCart,
+    setIsCartOpen,
+    toggleWishlist,
+    isInWishlist,
+  } = useCart();
   const product = selectedProductForModal;
 
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
@@ -254,6 +261,21 @@ export const ProductDetailModal: React.FC = () => {
                       <span>Add to Bag · ₹{(product.price * quantity).toLocaleString('en-IN')}</span>
                     </>
                   )}
+                </button>
+
+                {/* Heart Wishlist CTA */}
+                <button
+                  type="button"
+                  onClick={() => toggleWishlist(product)}
+                  className={`p-3 rounded border transition-colors flex items-center justify-center ${
+                    isInWishlist(product.id)
+                      ? 'border-rose-300 bg-rose-50 text-rose-600'
+                      : 'border-neutral-300 hover:border-black text-neutral-700 hover:text-rose-600 bg-white'
+                  }`}
+                  aria-label={isInWishlist(product.id) ? 'Remove from wishlist' : 'Heart to wishlist'}
+                  title={isInWishlist(product.id) ? 'Saved in wishlist' : 'Save to wishlist'}
+                >
+                  <Heart className={`w-4 h-4 ${isInWishlist(product.id) ? 'fill-current text-rose-600' : ''}`} />
                 </button>
               </div>
 

@@ -12,9 +12,11 @@ import { ProductGrid } from './components/ProductGrid';
 import { CustomerStories } from './components/CustomerStories';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { CartDrawer } from './components/CartDrawer';
+import { WishlistDrawer } from './components/WishlistDrawer';
 import { FullCartPage } from './components/FullCartPage';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderConfirmationModal } from './components/OrderConfirmationModal';
+import { OrderTracking } from './components/OrderTracking';
 import { ToastContainer } from './components/ToastContainer';
 import { Footer } from './components/Footer';
 
@@ -82,10 +84,14 @@ const AppContent: React.FC = () => {
         {activeView === 'cart' && <FullCartPage />}
         {activeView === 'checkout' && <CheckoutModal />}
         {activeView === 'confirmation' && <OrderConfirmationModal />}
+        {activeView === 'tracking' && <OrderTracking />}
       </main>
 
       {/* Slide-over Cart Drawer */}
       <CartDrawer />
+
+      {/* Slide-over Wishlist Drawer */}
+      <WishlistDrawer />
 
       {/* Product Quick View / Detail Modal */}
       <ProductDetailModal />

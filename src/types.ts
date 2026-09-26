@@ -75,6 +75,58 @@ export interface OrderSummary {
   estimatedDelivery: string;
 }
 
+export type IndianCourierName =
+  | 'Blue Dart Express'
+  | 'Delhivery'
+  | 'DTDC Express'
+  | 'India Post (Speed Post)'
+  | 'Shadowfax Metro';
+
+export type ShipmentStage =
+  | 'order_confirmed'
+  | 'artisan_packed'
+  | 'dispatched_hub'
+  | 'in_transit'
+  | 'out_for_delivery'
+  | 'delivered';
+
+export interface TrackingCheckpoint {
+  id: string;
+  timestamp: string;
+  location: string;
+  status: string;
+  description: string;
+  completed: boolean;
+  isCurrent?: boolean;
+}
+
+export interface ShipmentData {
+  orderId: string;
+  awbNumber: string;
+  courierName: IndianCourierName;
+  courierContact: string;
+  estimatedDelivery: string;
+  currentStage: ShipmentStage;
+  deliveryAddress: {
+    recipientName: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
+  itemsSummary: {
+    name: string;
+    quantity: number;
+    image: string;
+  }[];
+  checkpoints: TrackingCheckpoint[];
+  otpRequiredForDelivery: boolean;
+  deliveryAgent?: {
+    name: string;
+    phone: string;
+    maskedOtp?: string;
+  };
+}
+
 export interface CustomerStory {
   id: string;
   author: string;
@@ -89,3 +141,4 @@ export interface CustomerStory {
   review: string;
   highlightTag: string;
 }
+

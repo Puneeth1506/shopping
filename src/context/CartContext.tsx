@@ -13,8 +13,21 @@ interface CartContextType {
   savedItems: SavedItem[];
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
-  activeView: 'shop' | 'cart' | 'checkout' | 'confirmation';
-  setActiveView: (view: 'shop' | 'cart' | 'checkout' | 'confirmation') => void;
+  activeView: 'shop' | 'cart' | 'checkout' | 'confirmation' | 'tracking';
+  setActiveView: (view: 'shop' | 'cart' | 'checkout' | 'confirmation' | 'tracking') => void;
+  trackingOrderId: string | null;
+  setTrackingOrderId: (id: string | null) => void;
+  openTrackingForOrder: (idOrProductName?: string) => void;
+  
+  // Wishlist Feature
+  wishlist: Product[];
+  isWishlistOpen: boolean;
+  setIsWishlistOpen: (open: boolean) => void;
+  toggleWishlist: (product: Product) => void;
+  isInWishlist: (productId: string) => boolean;
+  removeFromWishlist: (productId: string) => void;
+  clearWishlist: () => void;
+  wishlistCount: number;
   
   // Cart Actions
   addToCart: (product: Product, quantity?: number, color?: string, size?: string) => void;
@@ -52,6 +65,7 @@ interface CartContextType {
   total: number;
   
   // Checkout & Orders
+  orderHistory: OrderSummary[];
   lastCompletedOrder: OrderSummary | null;
   placeOrder: (customer: OrderCustomer) => Promise<OrderSummary>;
   
@@ -69,6 +83,41 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const CART_STORAGE_KEY = 'vanya_indian_cart_v2';
 const SAVED_STORAGE_KEY = 'vanya_indian_saved_v2';
 const ORDER_STORAGE_KEY = 'vanya_indian_last_order_v2';
+const ORDER_HISTORY_KEY = 'vanya_indian_order_history_v2';
+const WISHLIST_STORAGE_KEY = 'vanya_indian_wishlist_v2';
+
+const DEMO_PLACED_ORDER: OrderSummary = {
+  orderId: 'ORD-VAN-84920',
+  items: [
+    {
+      id: `${PRODUCTS[0].id}-Traditional Polished Brass-Medium (350ml)`,
+      product: PRODUCTS[0],
+      quantity: 1,
+      selectedColor: 'Traditional Polished Brass',
+      selectedSize: 'Medium (350ml)',
+    },
+  ],
+  subtotal: 2490,
+  discount: 0,
+  shippingCost: 0,
+  shippingMethod: 'express',
+  tax: 298,
+  total: 2788,
+  customer: {
+    fullName: 'Ananya Sharma',
+    email: 'ananya.sharma@gmail.com',
+    phone: '9845012345',
+    address: '42, 12th Main Road, HAL 2nd Stage, Indiranagar',
+    city: 'Bengaluru',
+    state: 'Karnataka',
+    postalCode: '560038',
+    country: 'India',
+    paymentMethod: 'upi',
+    upiId: 'ananya@oksbi',
+  },
+  createdAt: new Date(Date.now() - 36 * 3600 * 1000).toISOString(),
+  estimatedDelivery: 'Today by 4:30 PM',
+};
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -106,13 +155,48 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return [];
   });
 
+  // Wishlist state initialized from localStorage
+  const [wishlist, setWishlist] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem(WISHLIST_STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // fallback
+    }
+    // Pre-seed with 1 crafted piece so wishlist immediately feels alive!
+    return [PRODUCTS[1]]; // Sanganer Botanical Indigo Mulmul Razai Throw
+  });
+
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'shop' | 'cart' | 'checkout' | 'confirmation'>('shop');
+  const [activeView, setActiveView] = useState<'shop' | 'cart' | 'checkout' | 'confirmation' | 'tracking'>('shop');
+  const [trackingOrderId, setTrackingOrderId] = useState<string | null>(null);
   const [appliedPromo, setAppliedPromo] = useState<PromoCode | null>(null);
+
+  const openTrackingForOrder = (idOrProductName?: string) => {
+    if (idOrProductName) {
+      setTrackingOrderId(idOrProductName);
+    } else if (lastCompletedOrder) {
+      setTrackingOrderId(lastCompletedOrder.orderId);
+    }
+    setActiveView('tracking');
+    setIsCartOpen(false);
+    setIsWishlistOpen(false);
+  };
   const [shippingMethod, setShippingMethod] = useState<'standard' | 'express' | 'courier'>('standard');
   const [isGiftWrap, setIsGiftWrap] = useState(false);
   const [orderNote, setOrderNote] = useState('');
   const [selectedProductForModal, setSelectedProductForModal] = useState<Product | null>(null);
+  const [orderHistory, setOrderHistory] = useState<OrderSummary[]>(() => {
+    try {
+      const saved = localStorage.getItem(ORDER_HISTORY_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // fallback
+    }
+    return [DEMO_PLACED_ORDER];
+  });
+
   const [lastCompletedOrder, setLastCompletedOrder] = useState<OrderSummary | null>(() => {
     try {
       const saved = localStorage.getItem(ORDER_STORAGE_KEY);
@@ -120,9 +204,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {
       // fallback
     }
-    return null;
+    return DEMO_PLACED_ORDER;
   });
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Sync order history to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(orderHistory));
+    } catch {
+      // ignore
+    }
+  }, [orderHistory]);
 
   // Sync cart to localStorage
   useEffect(() => {
@@ -141,6 +234,50 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // ignore
     }
   }, [savedItems]);
+
+  // Sync wishlist to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist));
+    } catch {
+      // ignore
+    }
+  }, [wishlist]);
+
+  // Wishlist operations
+  const isInWishlist = (productId: string) => {
+    return wishlist.some((p) => p.id === productId);
+  };
+
+  const toggleWishlist = (product: Product) => {
+    setWishlist((prev) => {
+      const exists = prev.some((p) => p.id === product.id);
+      if (exists) {
+        addToast(`Removed "${product.name}" from personal collection`, 'info');
+        return prev.filter((p) => p.id !== product.id);
+      } else {
+        addToast(`Added "${product.name}" to your wishlist`, 'success');
+        return [...prev, product];
+      }
+    });
+  };
+
+  const removeFromWishlist = (productId: string) => {
+    setWishlist((prev) => {
+      const item = prev.find((p) => p.id === productId);
+      if (item) {
+        addToast(`Removed "${item.name}" from wishlist`, 'info');
+      }
+      return prev.filter((p) => p.id !== productId);
+    });
+  };
+
+  const clearWishlist = () => {
+    setWishlist([]);
+    addToast('Wishlist collection cleared', 'info');
+  };
+
+  const wishlistCount = wishlist.length;
 
   const addToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
     const id = Math.random().toString(36).substring(2, 9);
@@ -345,6 +482,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     setLastCompletedOrder(summary);
+    setOrderHistory((prev) => [summary, ...prev.filter((o) => o.orderId !== summary.orderId)]);
     try {
       localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(summary));
     } catch {
@@ -370,8 +508,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         savedItems,
         isCartOpen,
         setIsCartOpen,
+        wishlist,
+        isWishlistOpen,
+        setIsWishlistOpen,
+        toggleWishlist,
+        isInWishlist,
+        removeFromWishlist,
+        clearWishlist,
+        wishlistCount,
         activeView,
         setActiveView,
+        trackingOrderId,
+        setTrackingOrderId,
+        openTrackingForOrder,
         addToCart,
         removeFromCart,
         updateQuantity,
@@ -397,6 +546,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         progressToFreeShipping,
         tax,
         total,
+        orderHistory,
         lastCompletedOrder,
         placeOrder,
         selectedProductForModal,

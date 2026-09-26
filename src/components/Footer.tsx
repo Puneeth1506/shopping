@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { ArrowRight, Check, Heart } from 'lucide-react';
+import { ArrowRight, Check, Heart, Truck } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 export const Footer: React.FC = () => {
+  const { openTrackingForOrder } = useCart();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -51,6 +53,15 @@ export const Footer: React.FC = () => {
               Pan-India Care
             </h4>
             <ul className="space-y-2 text-xs text-neutral-400">
+              <li>
+                <button
+                  onClick={() => openTrackingForOrder()}
+                  className="hover:text-white transition-colors text-left flex items-center gap-1.5 text-[#E0A865]"
+                >
+                  <Truck className="w-3.5 h-3.5" />
+                  <span>Track Order (Live AWB)</span>
+                </button>
+              </li>
               <li><a href="#customer-stories" className="hover:text-white transition-colors">Customer Stories (2,400+)</a></li>
               <li><span className="text-neutral-400">Free Pan-India Delivery &gt; ₹1,499</span></li>
               <li><span className="text-neutral-400">Cash on Delivery & Instant UPI</span></li>
