@@ -1,0 +1,6 @@
+{
+  "name": "Atelier Nord — Minimalist Lifestyle & Living",
+  "description": "Curated objects for mindful living with an interactive shopping cart, promo calculation, and seamless checkout experience.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
