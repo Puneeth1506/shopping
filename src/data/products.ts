@@ -1,6 +1,14 @@
 import { Product, PromoCode, CustomerStory } from '../types';
+import heroIndianLiving from '../assets/images/hero_indian_living_1790443096085.jpg';
+import productBrassFilterCoffee from '../assets/images/product_brass_filter_coffee_1790443110062.jpg';
+import productJaipurBlockprintThrow from '../assets/images/product_jaipur_blockprint_throw_1790443122732.jpg';
+import productCeramicPourover from '../assets/images/product_ceramic_pourover_1790442660332.jpg';
+import productAcousticSpeaker from '../assets/images/product_acoustic_speaker_1790442673039.jpg';
+import productMechanicalPen from '../assets/images/product_mechanical_pen_1790442689616.jpg';
+import productLinenThrow from '../assets/images/product_linen_throw_1790442702185.jpg';
+import customerAvatarAnanya from '../assets/images/customer_avatar_ananya_1790443134969.jpg';
 
-export const HERO_IMAGE = '/src/assets/images/hero_indian_living_1790443096085.jpg';
+export const HERO_IMAGE = heroIndianLiving;
 
 export const PRODUCTS: Product[] = [
   {
@@ -10,7 +18,7 @@ export const PRODUCTS: Product[] = [
     category: 'Brassware',
     price: 2490,
     originalPrice: 2990,
-    image: '/src/assets/images/product_brass_filter_coffee_1790443110062.jpg',
+    image: productBrassFilterCoffee,
     fallbackBg: 'linear-gradient(135deg, #e8dfcd 0%, #c9b489 100%)',
     description: 'Forged by generational brass smiths in Kumbakonam, Tamil Nadu. Designed with micro-perforated double-chamber drip extraction that brews rich, aromatic decoction. Includes traditional fluted davarah for cooling and frothing coffee to perfection.',
     craftOrigin: 'Kumbakonam, Tamil Nadu',
@@ -39,7 +47,7 @@ export const PRODUCTS: Product[] = [
     category: 'Textiles',
     price: 3850,
     originalPrice: 4400,
-    image: '/src/assets/images/product_jaipur_blockprint_throw_1790443122732.jpg',
+    image: productJaipurBlockprintThrow,
     fallbackBg: 'linear-gradient(135deg, #dce4eb 0%, #b3c2d4 100%)',
     description: 'Handcrafted in Sanganer near Jaipur using hand-carved teak wood blocks and 100% natural fermented indigo dyes. Filled with ultra-light carded cotton and hand-quilted (tagai) by village women artisans for cloud-like softness during monsoon and winter evenings.',
     craftOrigin: 'Sanganer, Rajasthan',
@@ -69,7 +77,7 @@ export const PRODUCTS: Product[] = [
     category: 'Ceramics',
     price: 1450,
     originalPrice: 1750,
-    image: '/src/assets/images/product_ceramic_pourover_1790442660332.jpg',
+    image: productCeramicPourover,
     fallbackBg: 'linear-gradient(135deg, #e3d2c3 0%, #b8977e 100%)',
     description: 'Wheel-thrown by master Kumbhar potters using alluvial clays gathered from the riverbeds of Kutch. Burnished with smooth river pebbles before pit firing, creating a natural porous finish that enhances the earthen aroma of steeped Darjeeling leaf or chai.',
     craftOrigin: 'Bhuj, Gujarat',
@@ -97,7 +105,7 @@ export const PRODUCTS: Product[] = [
     subtitle: 'Reclaimed CP teak enclosure with Kerala bell-metal acoustic acoustic grill',
     category: 'Acoustic',
     price: 7890,
-    image: '/src/assets/images/product_acoustic_speaker_1790442673039.jpg',
+    image: productAcousticSpeaker,
     fallbackBg: 'linear-gradient(135deg, #d8d3cc 0%, #ad9c88 100%)',
     description: 'An acoustic marvel uniting heirloom Indian woodwork with precision high-resolution audio. Hand-turned from sustainably sourced Nilgiri plantation teak and fitted with an acoustically resonant Vengalam (bronze bell-metal) sound ring. Equipped with Bluetooth 5.3 and lossless aptX.',
     craftOrigin: 'Wayanad & Mannar, Kerala',
@@ -124,7 +132,7 @@ export const PRODUCTS: Product[] = [
     subtitle: 'Ancient 4,000-year-old brass casting technique from Chhattisgarh',
     category: 'Brassware',
     price: 1850,
-    image: '/src/assets/images/product_mechanical_pen_1790442689616.jpg',
+    image: productMechanicalPen,
     fallbackBg: 'linear-gradient(135deg, #e4dacb 0%, #b8a27d 100%)',
     description: 'Each Dhokra vessel is singular and unrepeatable. Crafted using beeswax threads wound over a clay core, encased in river silt, and cast with molten scrap brass using lost-wax metallurgy. Holds dhoop cones, incense sticks, and brass oil wicks.',
     craftOrigin: 'Bastar, Chhattisgarh',
@@ -152,7 +160,7 @@ export const PRODUCTS: Product[] = [
     category: 'Copperware',
     price: 1690,
     originalPrice: 1950,
-    image: '/src/assets/images/product_linen_throw_1790442702185.jpg',
+    image: productLinenThrow,
     fallbackBg: 'linear-gradient(135deg, #eed8ce 0%, #c9886a 100%)',
     description: 'Hand-raised from seamless pure copper sheets by the Thathera metal artisans of Moradabad. The dimpled honeycomb hammer marks increase surface contact for optimal water ionization (Tamra Jal) in accordance with Ayurvedic traditions.',
     craftOrigin: 'Moradabad, Uttar Pradesh',
@@ -204,7 +212,7 @@ export const CUSTOMER_STORIES: CustomerStory[] = [
     author: 'Ananya Iyer',
     city: 'Bengaluru',
     state: 'Karnataka',
-    avatar: '/src/assets/images/customer_avatar_ananya_1790443134969.jpg',
+    avatar: customerAvatarAnanya,
     rating: 5,
     date: 'Verified Buyer · 2 weeks ago',
     productName: 'Kumbakonam Heavy Brass Filter Kaapi Set',
